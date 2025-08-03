@@ -22,7 +22,7 @@ export const DataChart: React.FC<DataChartProps> = ({ data }) => {
           <Legend />
           <Line type="monotone" dataKey="weight" stroke="#8884d8" name="体重 (kg)" />
           <Line type="monotone" dataKey="bodyFatPercentage" stroke="#82ca9d" name="体脂肪率 (%)" />
-          <Line type="monotone" dataKey="skeletalMuscleMass" stroke="#ffc658" name="骨格筋量 (kg)" />
+          <Line type="monotone" dataKey="skeletalMusclePercentage" stroke="#ffc658" name="骨格筋率 (%)" />
           <Line type="monotone" dataKey="basalMetabolism" stroke="#ff7300" name="基礎代謝 (kcal)" />
         </LineChart>
       </ResponsiveContainer>

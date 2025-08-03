@@ -10,22 +10,22 @@ export const DataForm: React.FC<DataFormProps> = ({ onAddData }) => {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [weight, setWeight] = useState('');
   const [bodyFatPercentage, setBodyFatPercentage] = useState('');
-  const [skeletalMuscleMass, setSkeletalMuscleMass] = useState('');
+  const [skeletalMusclePercentage, setSkeletalMusclePercentage] = useState('');
   const [basalMetabolism, setBasalMetabolism] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (weight && bodyFatPercentage && skeletalMuscleMass && basalMetabolism) {
+    if (weight && bodyFatPercentage && skeletalMusclePercentage && basalMetabolism) {
       onAddData({
         date,
         weight: parseFloat(weight),
         bodyFatPercentage: parseFloat(bodyFatPercentage),
-        skeletalMuscleMass: parseFloat(skeletalMuscleMass),
+        skeletalMusclePercentage: parseFloat(skeletalMusclePercentage),
         basalMetabolism: parseInt(basalMetabolism),
       });
       setWeight('');
       setBodyFatPercentage('');
-      setSkeletalMuscleMass('');
+      setSkeletalMusclePercentage('');
       setBasalMetabolism('');
     }
   };
@@ -60,10 +60,10 @@ export const DataForm: React.FC<DataFormProps> = ({ onAddData }) => {
         margin="normal"
       />
       <TextField
-        label="骨格筋量 (kg)"
+        label="骨格筋率 (%)"
         type="number"
-        value={skeletalMuscleMass}
-        onChange={(e) => setSkeletalMuscleMass(e.target.value)}
+        value={skeletalMusclePercentage}
+        onChange={(e) => setSkeletalMusclePercentage(e.target.value)}
         fullWidth
         margin="normal"
       />
