@@ -4,10 +4,33 @@ import { DataForm } from './DataForm';
 import { DataChart } from './DataChart';
 import { Advice } from './Advice';
 import { Backup } from './Backup';
+import { DataHistory } from './DataHistory'; // DataHistoryをインポート
 import { Container, Typography, Box, AppBar, Toolbar } from '@mui/material';
 
 export const Dashboard: React.FC = () => {
-  const { healthData, addHealthData, importHealthData } = useHealthData();
+  // deleteHealthDataをフックから取得
+  const { healthData, addHealthData, deleteHealthData, importHealthData } = useHealthData();
+
+  // 削除ハンドラを定義
+  const handleDelete = (date: string) => {
+    // ユーザーに削除の確認を求める
+    if (window.confirm(`${formatDate(date)}のデータを本当に削除しますか？`)) {
+      deleteHealthData(date);
+    }
+  };
+
+  // 日付を分かりやすい形式にフォーマットするヘルパー関数
+  const formatDate = (dateString: string) => {
+    try {
+        return new Date(dateString + 'T00:00:00').toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (e) {
+        return dateString;
+    }
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -27,6 +50,8 @@ export const Dashboard: React.FC = () => {
           <>
             <Advice data={healthData} />
             <DataChart data={healthData} />
+            {/* DataHistoryコンポーネントを追加し、データと削除ハンドラを渡す */}
+            <DataHistory data={healthData} onDelete={handleDelete} />
             <Backup data={healthData} onImport={importHealthData} />
           </>
         )}

@@ -31,10 +31,9 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const importedData = JSON.parse(e.target?.result as string);
-          // ここでインポートされるデータの形式をバリデーションすることが望ましい
+          const text = e.target?.result as string;
+          const importedData = JSON.parse(text);
           onImport(importedData);
-          alert('データが正常にインポートされました。');
         } catch (error) {
           alert('ファイルの読み込みに失敗しました。有効なJSONファイルを選択してください。');
           console.error('Failed to parse imported file', error);
@@ -42,6 +41,8 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
       };
       reader.readAsText(file);
     }
+    // 同じファイルを選択してもイベントが発火するように値をリセット
+    event.target.value = '';
   };
 
   return (
