@@ -52,9 +52,9 @@ export const Dashboard: React.FC = () => {
             <DataChart data={healthData} />
             {/* DataHistoryコンポーネントを追加し、データと削除ハンドラを渡す */}
             <DataHistory data={healthData} onDelete={handleDelete} />
-            <Backup data={healthData} onImport={importHealthData} />
           </>
         )}
+        <Backup data={healthData} onImport={importHealthData} />
       </Container>
     </Box>
   );

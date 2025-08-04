@@ -11,7 +11,15 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(data, null, 2);
+    const exportData = {
+      metadata: {
+        app_name: "CoreCoach",
+        description: "このJSONは、CoreCoachアプリで記録された日々の健康データ（体重、体脂肪率、骨格筋率、基礎代謝）のリストです。",
+        export_date: new Date().toISOString().split('T')[0],
+      },
+      health_data: data,
+    };
+    const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `corecoach_backup_${new Date().toISOString().split('T')[0]}.json`;
 
@@ -32,8 +40,18 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
       reader.onload = (e) => {
         try {
           const text = e.target?.result as string;
-          const importedData = JSON.parse(text);
-          onImport(importedData);
+          const parsedData = JSON.parse(text);
+          let dataToImport: HealthData[];
+
+          // 新しい形式（メタデータあり）と古い形式（配列のみ）の両方に対応
+          if (parsedData && typeof parsedData === 'object' && 'health_data' in parsedData) {
+            dataToImport = parsedData.health_data;
+          } else if (Array.isArray(parsedData)) {
+            dataToImport = parsedData;
+          } else {
+            throw new Error('Invalid JSON format.');
+          }
+          onImport(dataToImport);
         } catch (error) {
           alert('ファイルの読み込みに失敗しました。有効なJSONファイルを選択してください。');
           console.error('Failed to parse imported file', error);
