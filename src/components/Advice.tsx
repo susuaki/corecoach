@@ -1,6 +1,6 @@
 import React from 'react';
 import { HealthData } from '../types/HealthData';
-import { Box, Typography, Paper } from '@mui/material';
+import { Typography, Paper } from '@mui/material';
 
 interface AdviceProps {
   data: HealthData[];
