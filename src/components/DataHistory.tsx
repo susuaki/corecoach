@@ -1,8 +1,9 @@
 import React from 'react';
 import { HealthData } from '../types/HealthData';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography, Box } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography, Box, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { format } from 'date-fns';
+import { ja } from 'date-fns/locale/ja';
 
 interface DataHistoryProps {
   data: HealthData[];
@@ -21,7 +22,7 @@ export const DataHistory: React.FC<DataHistoryProps> = ({ data, onDelete }) => {
         <TableContainer component={Paper}>
         <Table>
             <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
                 <TableCell>日付</TableCell>
                 <TableCell align="right">体重 (kg)</TableCell>
                 <TableCell align="right">体脂肪率 (%)</TableCell>
@@ -32,19 +33,20 @@ export const DataHistory: React.FC<DataHistoryProps> = ({ data, onDelete }) => {
             </TableHead>
             <TableBody>
             {sortedData.map((row) => (
-                <TableRow key={row.date}>
+                <TableRow key={row.date} hover>
                 <TableCell component="th" scope="row">
-                    {/* 日付のフォーマットを調整 */}
-                    {format(new Date(row.date + 'T00:00:00'), 'yyyy/MM/dd')}
+                    {format(new Date(row.date + 'T00:00:00'), 'yyyy/MM/dd (E)', { locale: ja })}
                 </TableCell>
                 <TableCell align="right">{(row.weight || 0).toFixed(1)}</TableCell>
                 <TableCell align="right">{(row.bodyFatPercentage || 0).toFixed(1)}</TableCell>
                 <TableCell align="right">{(row.skeletalMusclePercentage || 0).toFixed(1)}</TableCell>
                 <TableCell align="right">{row.basalMetabolism || 0}</TableCell>
                 <TableCell align="center">
+                  <Tooltip title="削除">
                     <IconButton onClick={() => onDelete(row.date)} size="small">
                         <DeleteIcon />
                     </IconButton>
+                  </Tooltip>
                 </TableCell>
                 </TableRow>
             ))}
