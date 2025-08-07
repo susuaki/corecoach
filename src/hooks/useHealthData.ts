@@ -54,11 +54,40 @@ export const useHealthData = () => {
           basalMetabolism: Number(item.basalMetabolism || 0),
         };
 
-        // 必須のdateフィールドが存在するかチェック
+        // データの妥当性チェック
         if (!newItem.date || typeof newItem.date !== 'string') {
             console.warn('Skipping record with missing or invalid date:', item);
             return null;
         }
+        
+        // 日付形式の検証
+        const dateObj = new Date(newItem.date);
+        if (isNaN(dateObj.getTime())) {
+            console.warn('Skipping record with invalid date format:', item);
+            return null;
+        }
+        
+        // 数値範囲の検証
+        if (isNaN(newItem.weight) || newItem.weight <= 0 || newItem.weight > 1000) {
+            console.warn('Skipping record with invalid weight:', item);
+            return null;
+        }
+        
+        if (isNaN(newItem.bodyFatPercentage) || newItem.bodyFatPercentage < 0 || newItem.bodyFatPercentage > 100) {
+            console.warn('Skipping record with invalid body fat percentage:', item);
+            return null;
+        }
+        
+        if (isNaN(newItem.skeletalMusclePercentage) || newItem.skeletalMusclePercentage < 0 || newItem.skeletalMusclePercentage > 100) {
+            console.warn('Skipping record with invalid skeletal muscle percentage:', item);
+            return null;
+        }
+        
+        if (isNaN(newItem.basalMetabolism) || newItem.basalMetabolism <= 0 || newItem.basalMetabolism > 10000) {
+            console.warn('Skipping record with invalid basal metabolism:', item);
+            return null;
+        }
+        
         return newItem;
       }).filter((item): item is HealthData => item !== null); // nullを除外
 

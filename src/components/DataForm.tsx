@@ -15,19 +15,59 @@ export const DataForm: React.FC<DataFormProps> = ({ onAddData }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (weight && bodyFatPercentage && skeletalMusclePercentage && basalMetabolism) {
-      onAddData({
-        date,
-        weight: parseFloat(weight),
-        bodyFatPercentage: parseFloat(bodyFatPercentage),
-        skeletalMusclePercentage: parseFloat(skeletalMusclePercentage),
-        basalMetabolism: parseInt(basalMetabolism),
-      });
-      setWeight('');
-      setBodyFatPercentage('');
-      setSkeletalMusclePercentage('');
-      setBasalMetabolism('');
+    
+    // 入力値の検証
+    const weightNum = parseFloat(weight);
+    const bodyFatNum = parseFloat(bodyFatPercentage);
+    const muscleNum = parseFloat(skeletalMusclePercentage);
+    const metabolismNum = parseInt(basalMetabolism);
+    
+    // 数値の範囲チェック
+    if (!weight || !bodyFatPercentage || !skeletalMusclePercentage || !basalMetabolism) {
+      alert('すべての項目を入力してください。');
+      return;
     }
+    
+    if (isNaN(weightNum) || weightNum <= 0 || weightNum > 1000) {
+      alert('体重は0より大きく1000kg以下の数値を入力してください。');
+      return;
+    }
+    
+    if (isNaN(bodyFatNum) || bodyFatNum < 0 || bodyFatNum > 100) {
+      alert('体脂肪率は0%以上100%以下の数値を入力してください。');
+      return;
+    }
+    
+    if (isNaN(muscleNum) || muscleNum < 0 || muscleNum > 100) {
+      alert('骨格筋率は0%以上100%以下の数値を入力してください。');
+      return;
+    }
+    
+    if (isNaN(metabolismNum) || metabolismNum <= 0 || metabolismNum > 10000) {
+      alert('基礎代謝は0より大きく10000kcal以下の数値を入力してください。');
+      return;
+    }
+    
+    // 日付の妥当性チェック
+    const dateObj = new Date(date);
+    const today = new Date();
+    if (dateObj > today) {
+      alert('未来の日付は入力できません。');
+      return;
+    }
+    
+    onAddData({
+      date,
+      weight: weightNum,
+      bodyFatPercentage: bodyFatNum,
+      skeletalMusclePercentage: muscleNum,
+      basalMetabolism: metabolismNum,
+    });
+    
+    setWeight('');
+    setBodyFatPercentage('');
+    setSkeletalMusclePercentage('');
+    setBasalMetabolism('');
   };
 
   return (

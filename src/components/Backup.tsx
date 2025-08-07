@@ -36,10 +36,29 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // ファイルサイズの制限（10MB）
+      if (file.size > 10 * 1024 * 1024) {
+        alert('ファイルサイズが大きすぎます。10MB以下のファイルを選択してください。');
+        return;
+      }
+      
+      // ファイル形式のチェック
+      if (!file.name.toLowerCase().endsWith('.json')) {
+        alert('JSONファイルのみ対応しています。');
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
           const text = e.target?.result as string;
+          
+          // テキスト長の制限
+          if (text.length > 1024 * 1024) {
+            alert('ファイルの内容が大きすぎます。');
+            return;
+          }
+          
           const parsedData = JSON.parse(text);
           let dataToImport: HealthData[];
 
@@ -51,12 +70,24 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
           } else {
             throw new Error('Invalid JSON format.');
           }
+          
+          // 配列の長さ制限
+          if (dataToImport.length > 10000) {
+            alert('データの件数が多すぎます。10000件以下のデータを選択してください。');
+            return;
+          }
+          
           onImport(dataToImport);
         } catch (error) {
           alert('ファイルの読み込みに失敗しました。有効なJSONファイルを選択してください。');
           console.error('Failed to parse imported file', error);
         }
       };
+      
+      reader.onerror = () => {
+        alert('ファイルの読み込み中にエラーが発生しました。');
+      };
+      
       reader.readAsText(file);
     }
     // 同じファイルを選択してもイベントが発火するように値をリセット
