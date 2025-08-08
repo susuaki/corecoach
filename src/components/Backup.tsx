@@ -11,17 +11,26 @@ export const Backup: React.FC<BackupProps> = ({ data, onImport }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExport = () => {
+    const getJSTDateString = () => {
+      const now = new Date();
+      const jstOffset = 9 * 60; // JST is UTC+9
+      const jstTime = new Date(now.getTime() + (jstOffset * 60 * 1000));
+      return jstTime.toISOString().split('T')[0];
+    };
+
+    const jstDateString = getJSTDateString();
+    
     const exportData = {
       metadata: {
         app_name: "CoreCoach",
         description: "このJSONは、CoreCoachアプリで記録された日々の健康データ（体重、体脂肪率、骨格筋率、基礎代謝）のリストです。",
-        export_date: new Date().toISOString().split('T')[0],
+        export_date: jstDateString,
       },
       health_data: data,
     };
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    const exportFileDefaultName = `corecoach_backup_${new Date().toISOString().split('T')[0]}.json`;
+    const exportFileDefaultName = `corecoach_backup_${jstDateString}.json`;
 
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
